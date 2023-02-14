@@ -7,5 +7,6 @@ MySQL server written with C language.
 ```sh
 cd cs1
 ./cmd.sh init # Initialize Docker container.
-./cmd.sh run # Build source codes in the container and run the program.
+./cmd.sh make # Build source codes in the container.
+./cmd.sh run # Run the program.
 ```
