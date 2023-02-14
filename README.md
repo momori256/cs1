@@ -10,3 +10,9 @@ cd cs1
 ./cmd.sh make # Build source codes in the container.
 ./cmd.sh run # Run the program.
 ```
+
+# TODO
+
+- benchmark
+  - request per second
+- thread pool
