@@ -14,5 +14,6 @@ cd cs1
 # TODO
 
 - benchmark
+  - `ab -c 8 -n 10000 localhost:54321/2`
   - request per second
 - thread pool
