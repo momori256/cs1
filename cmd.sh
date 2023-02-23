@@ -4,6 +4,7 @@ cont="cs1-mysql" # container name.
 mount="/src" # bind mount.
 pass="root" # MySQL password.
 db="db1" # MySQL database name.
+port="54321"
 
 case "$1" in
   "init")
@@ -12,7 +13,7 @@ case "$1" in
       docker rm "$cont"
     fi
 
-    docker run -d --name "$cont" -e MYSQL_ROOT_PASSWORD="$pass" -v "`pwd`/src":"$mount" -p 54321:54321 mysql
+    docker run -d --name "$cont" -e MYSQL_ROOT_PASSWORD="$pass" -v "`pwd`/src":"$mount" -p "$port":"$port" mysql
 
     docker exec -it "$cont" apt-get -y update
     docker exec -it "$cont" apt-get -y upgrade
@@ -33,12 +34,19 @@ case "$1" in
     docker exec -it "$cont" mysql -p"$pass" -uroot -D"$db"
     ;;
   "make")
-    docker exec -it "$cont" "$@" --directory "$mount"
+    if expr "$(expr "$2" : "multi")" = "$(expr length "multi")" > /dev/null; then
+      docker exec -it "$cont" make MACRO=-DMULTI_THREAD --directory "$mount"
+    else
+      docker exec -it "$cont" "$@" --directory "$mount"
+    fi
     ;;
   "run")
     docker exec -it "$cont" /src/a.out
     ;;
+  "bench")
+    ab -c "$2" -n "$3" localhost:"$port"/2
+    ;;
   *)
-    echo "./cmd.sh <init | bash | mysql | make | run>"
+    echo "./cmd.sh <init | bash | mysql | make | run | bench>"
     ;;
 esac

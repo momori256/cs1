@@ -1,8 +1,8 @@
 # Description
 
-MySQL server written with C language.
+C server using MySQL and HTTP.
 
-# How to setup
+# Setup
 
 ```sh
 cd cs1
@@ -11,9 +11,23 @@ cd cs1
 ./cmd.sh run # Run the program.
 ```
 
-# TODO
+# Benchmarking
 
-- benchmark
-  - `ab -c 8 -n 10000 localhost:54321/2`
-  - request per second
-- thread pool
+`cmd.sh bench` benchmarks this server with `ab`, [Appache HTTP server benchmarking tool](https://httpd.apache.org/docs/2.4/programs/ab.html).
+
+```sh
+./cmd.sh make # Single-threading.
+./cmd.sh run &
+./cmd.sh bench 4 5000 # 4 clients, 5000 request.
+```
+
+```sh
+./cmd.sh make multi # Multithreading.
+./cmd.sh run &
+./cmd.sh bench 8 10000 # 8 clients, 10000 request.
+```
+
+# Behavior
+
+The main thread is waiting for requests on `epoll`. The main thread either `accept`s the incomming request if it is a `connect` request, or reads the data and passes it to a new worker thread.  
+A new thread and a new MySQL connection are created for each request.

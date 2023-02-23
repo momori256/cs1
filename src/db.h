@@ -14,6 +14,12 @@ typedef struct {
 void db_mysql_initialize();
 
 /**
+ * @brief Finialize MySQL.
+ * @param conn MySQL connection.
+ */
+void db_mysql_finalize();
+
+/**
  * @brief Create MySQL database connection.
  * @return Created connection if succeeded; otherwise NULL.
  */
@@ -22,24 +28,15 @@ MYSQL* db_create_mysql_connect(const char* const host, const char* const user,
                                unsigned int port);
 
 /**
- * @brief Function pointer processing each MYSQL_ROW.
+ * @brief Finialize MySQL database connection.
  */
-typedef void (*row_processer)(const MYSQL_ROW* const, void* context);
+void db_finalize_mysql_connect(MYSQL* conn);
 
 /**
  * @brief Execute MySQL query.
  * @param conn MySQL connection.
- * @param sql SQL to executed.
- * @param process Fuction processing each row of the result.
+ * @param query Query to execute.
+ * @param buf Buffer to store results.
  */
-void db_mysql_query(MYSQL* const conn, const char* const sql, void* context,
-                    row_processer process);
-
 void db_mysql_query_store(MYSQL* const conn, const Query* const query,
                           char* const buf);
-
-/**
- * @brief Finialize MySQL.
- * @param conn MySQL connection.
- */
-void db_mysql_finalize(MYSQL* conn);

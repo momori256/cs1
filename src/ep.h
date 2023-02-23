@@ -1,8 +1,8 @@
 #ifndef EP_H
 #define EP_H
 
-#include <sys/epoll.h>
 #include <stdbool.h>
+#include <sys/epoll.h>
 
 typedef struct epoll_event epoll_event;
 

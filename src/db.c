@@ -23,22 +23,15 @@ MYSQL* db_create_mysql_connect(const char* const host, const char* const user,
   return conn;
 }
 
-void db_mysql_query(MYSQL* const conn, const char* const sql, void* context,
-                    row_processer process) {
-  if (mysql_query(conn, sql)) {
-    PRINT_ERR("mysql_query");
-    mysql_close(conn);
-  }
-
-  MYSQL_RES* const res = mysql_use_result(conn);
-  MYSQL_ROW row;
-  while ((row = mysql_fetch_row(res)) != NULL) {
-    process(&row, context);
-  }
-  mysql_free_result(res);
+void db_mysql_finalize() {
+  mysql_library_end();
 }
 
-void db_mysql_query_store(MYSQL* const conn,const  Query* const query,
+void db_finalize_mysql_connect(MYSQL* conn) {
+  mysql_close(conn);
+}
+
+void db_mysql_query_store(MYSQL* const conn, const Query* const query,
                           char* const buf) {
   if (mysql_query(conn, query->sql)) {
     PRINT_ERR("mysql_query");
@@ -53,9 +46,4 @@ void db_mysql_query_store(MYSQL* const conn,const  Query* const query,
     p = query->process_row(p, &row);
   }
   mysql_free_result(res);
-}
-
-void db_mysql_finalize(MYSQL* conn) {
-  mysql_close(conn);
-  mysql_library_end();
 }
